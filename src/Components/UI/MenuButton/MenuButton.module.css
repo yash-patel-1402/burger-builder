@@ -1,0 +1,16 @@
+.MenuButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  aspect-ratio: 1;
+  height: 40px;
+  cursor: pointer;
+}
+
+.MenuButton div {
+  height: 20%;
+  max-height: 7px;
+  background-color: white;
+  border-radius: 5px;
+  width: 100%;
+}

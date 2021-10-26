@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import BuildControls from '../../Components/BuildControls/BuildControls';
+import BuildControls from '../../Components/Burger/BuildControls/BuildControls';
 
 import Burger from '../../Components/Burger/Burger';
+import Modal from '../../Components/UI/Modal/Modal';
+import OrderSummary from '../../Components/Burger/OrderSummary/OrderSummary';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -22,6 +24,7 @@ export class BurgerBuilder extends Component {
       },
       price: 0,
       purchasable: false,
+      showOrderSummary: false,
     };
   }
 
@@ -76,9 +79,34 @@ export class BurgerBuilder extends Component {
     return disabledConfig;
   };
 
+  showOrderSummary = () => {
+    this.setState({
+      showOrderSummary: true,
+    });
+  };
+
+  hideOrderSummary = () => {
+    this.setState({ showOrderSummary: false });
+  };
+
+  continueToOrder = () => {
+    alert('You keep going!');
+  };
+
   render() {
     return (
       <>
+        <Modal
+          onCloseModalClick={this.hideOrderSummary}
+          show={this.state.showOrderSummary}
+        >
+          <OrderSummary
+            ingredients={this.state.ingredients}
+            price={this.state.price}
+            onCancelClick={this.hideOrderSummary}
+            onContinueClick={this.continueToOrder}
+          />
+        </Modal>
         <Burger ingredients={this.state.ingredients} />
         <BuildControls
           price={this.state.price}
@@ -87,6 +115,7 @@ export class BurgerBuilder extends Component {
           addIngredient={this.addIngredient}
           disabledConfig={this.getDisabledConfig()}
           purchasable={this.state.purchasable}
+          onOrderButtonClick={this.showOrderSummary}
         />
       </>
     );
