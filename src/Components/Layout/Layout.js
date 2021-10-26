@@ -10,7 +10,7 @@ class Layout extends Component {
   };
 
   toggleSideBar = () => {
-    console.log('toggleSideBAr');
+    // console.log('toggleSideBAr');
     this.setState((prevState) => {
       return { showSideBar: !prevState.showSideBar };
     });

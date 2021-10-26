@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import BuildControls from '../../Components/Burger/BuildControls/BuildControls';
 
+import axios from '../../axios-order';
+import BuildControls from '../../Components/Burger/BuildControls/BuildControls';
 import Burger from '../../Components/Burger/Burger';
 import Modal from '../../Components/UI/Modal/Modal';
 import OrderSummary from '../../Components/Burger/OrderSummary/OrderSummary';
+import Spinner from '../../Components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -16,17 +19,32 @@ export class BurgerBuilder extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ingredients: {
-        meat: 0,
-        salad: 0,
-        bacon: 0,
-        cheese: 0,
-      },
+      ingredients: null,
       price: 0,
       purchasable: false,
       showOrderSummary: false,
+      loading: false,
+      error: false,
     };
   }
+
+  componentDidMount = () => {
+    // console.log('BurgerBuilder componentDidMount called');
+    axios
+      .get(
+        'https://react-burger-b5a2b-default-rtdb.firebaseio.com/ingredients.json'
+      )
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          ingredients: response.data,
+          price: this.getPrice(response.data),
+        });
+      })
+      .catch((error) => {
+        this.setState({ error: true });
+      });
+  };
 
   getPurchasable = (updatedIngredients) => {
     const ingredientsCount = Object.keys(updatedIngredients)
@@ -68,6 +86,16 @@ export class BurgerBuilder extends Component {
     // console.log(this.state);
   };
 
+  getPrice = (ingredients) => {
+    let price = 0;
+    // console.log(ingredients);
+    for (let key in ingredients) {
+      price += INGREDIENT_PRICES[key] * ingredients[key];
+    }
+    // console.log(price);
+    return price;
+  };
+
   getDisabledConfig = () => {
     const disabledConfig = {
       ...this.state.ingredients,
@@ -90,36 +118,93 @@ export class BurgerBuilder extends Component {
   };
 
   continueToOrder = () => {
-    alert('You keep going!');
+    const data = {
+      ingredients: { ...this.state.ingredients },
+      price: this.state.price,
+      customer: {
+        name: 'Yash',
+        address: {
+          street: 'Test 1',
+          zipCode: '23456',
+          country: 'India',
+        },
+        email: 'yash@mail.com',
+      },
+      deliveryMethod: 'fastest',
+    };
+    this.setState({ loading: true });
+    axios
+      .post('/orders.json', data)
+      .then((response) => {
+        this.setState({ loading: false, showOrderSummary: false });
+        // console.log(response);
+      })
+      .catch((error) => {
+        this.setState({ loading: false });
+        // console.log(error);
+      });
   };
 
   render() {
+    let orderSummary = null;
+    let burgerPanel = <Spinner />;
+
+    if (this.state.error) {
+      burgerPanel = (
+        <p
+          style={{
+            color: 'red',
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+            textAlign: 'center',
+          }}
+        >
+          Something went wrong with our servers! Please try again later...
+        </p>
+      );
+    }
+
+    if (this.state.ingredients) {
+      orderSummary = (
+        <OrderSummary
+          ingredients={this.state.ingredients}
+          price={this.state.price}
+          onCancelClick={this.hideOrderSummary}
+          onContinueClick={this.continueToOrder}
+        />
+      );
+
+      burgerPanel = (
+        <>
+          <Burger ingredients={this.state.ingredients} />
+          <BuildControls
+            price={this.state.price}
+            ingredients={this.state.ingredients}
+            removeIngredient={this.removeIngredient}
+            addIngredient={this.addIngredient}
+            disabledConfig={this.getDisabledConfig()}
+            purchasable={this.state.purchasable}
+            onOrderButtonClick={this.showOrderSummary}
+          />
+        </>
+      );
+    }
+    if (this.state.loading) {
+      orderSummary = <Spinner />;
+    }
+
     return (
       <>
         <Modal
           onCloseModalClick={this.hideOrderSummary}
           show={this.state.showOrderSummary}
         >
-          <OrderSummary
-            ingredients={this.state.ingredients}
-            price={this.state.price}
-            onCancelClick={this.hideOrderSummary}
-            onContinueClick={this.continueToOrder}
-          />
+          {orderSummary}
         </Modal>
-        <Burger ingredients={this.state.ingredients} />
-        <BuildControls
-          price={this.state.price}
-          ingredients={this.state.ingredients}
-          removeIngredient={this.removeIngredient}
-          addIngredient={this.addIngredient}
-          disabledConfig={this.getDisabledConfig()}
-          purchasable={this.state.purchasable}
-          onOrderButtonClick={this.showOrderSummary}
-        />
+        {burgerPanel}
       </>
     );
   }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);
