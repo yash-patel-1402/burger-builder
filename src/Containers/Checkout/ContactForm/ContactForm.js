@@ -109,7 +109,7 @@ class ContactForm extends Component {
       );
       // console.log(newOrderForm[id].isValid);
     }
-    console.log(this.checkFormValidity(newOrderForm));
+    // console.log(this.checkFormValidity(newOrderForm));
     this.setState({
       orderForm: newOrderForm,
       isFormValid: this.checkFormValidity(newOrderForm),

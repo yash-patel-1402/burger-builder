@@ -5,25 +5,12 @@ import CheckoutSummary from '../../Components/Order/CheckoutSummary';
 import ContactForm from './ContactForm/ContactForm';
 import axios from '../../axios-order';
 import Spinner from '../../Components/UI/Spinner/Spinner';
+import { connect } from 'react-redux';
 
 export class Checkout extends Component {
   constructor(props) {
     super(props);
-    const queryParams = new URLSearchParams(this.props.location.search);
-    const initialIngredients = {};
-    let price = 0;
-    for (let param of queryParams.entries()) {
-      if (param[0] === 'price') {
-        price = parseFloat(param[1]);
-        continue;
-      }
-      initialIngredients[param[0]] = parseInt(param[1]);
-    }
-    // console.log(initialIngredients);
-    // console.log(this.props);
     this.state = {
-      ingredients: { ...initialIngredients },
-      price: price,
       loading: false,
     };
   }
@@ -39,8 +26,8 @@ export class Checkout extends Component {
   onContactFormSubmit = (e, customerData) => {
     e.preventDefault();
     const data = {
-      ingredients: { ...this.state.ingredients },
-      price: this.state.price,
+      ingredients: { ...this.props.ingredients },
+      price: this.props.price,
       customer: customerData,
     };
     // console.log(this.state);
@@ -63,7 +50,7 @@ export class Checkout extends Component {
     return (
       <div>
         <CheckoutSummary
-          ingredients={this.state.ingredients}
+          ingredients={this.props.ingredients}
           onCancelClick={this.onCancelClick}
           onContinueClick={this.onContinueClick}
         />
@@ -83,4 +70,15 @@ export class Checkout extends Component {
   }
 }
 
-export default Checkout;
+const mapStateToProps = (state) => {
+  return {
+    ingredients: state.ingredients,
+    price: state.price,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
