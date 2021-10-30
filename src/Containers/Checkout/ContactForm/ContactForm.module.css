@@ -1,15 +1,10 @@
 .ContactForm {
   width: 80%;
-  padding: 10px 20px;
   margin: auto;
-  text-align: center;
   box-shadow: 0 5px 10px #ccc;
   border: 1px solid #bbb;
-}
-
-.ContactForm input {
-  display: block;
-  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 @media (min-width: 500px) {

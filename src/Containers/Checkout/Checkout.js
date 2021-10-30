@@ -36,21 +36,12 @@ export class Checkout extends Component {
     this.props.history.push({ pathname: '/checkout/contact-data' });
   };
 
-  onContactFormSubmit = (e) => {
+  onContactFormSubmit = (e, customerData) => {
     e.preventDefault();
     const data = {
       ingredients: { ...this.state.ingredients },
       price: this.state.price,
-      customer: {
-        name: 'Yash',
-        address: {
-          street: 'Test 1',
-          zipCode: '23456',
-          country: 'India',
-        },
-        email: 'yash@mail.com',
-      },
-      deliveryMethod: 'fastest',
+      customer: customerData,
     };
     // console.log(this.state);
     // console.log(data);
