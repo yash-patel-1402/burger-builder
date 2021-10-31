@@ -8,6 +8,14 @@ export const PURCHASE_FAIL = 'PURCHASE_FAIL';
 export const PURCHASE_LOADING_SET = 'PURCHASE_LOADING_SET';
 export const PURCHASE_INIT = 'PURCHASE_INIT';
 
+export const GET_ORDERS_START = 'GET_ORDERS_START';
 export const GET_ALL_ORDERS = 'GET_ALL_ORDERS';
 export const SET_ORDERS = 'SET_ORDERS';
 export const GET_ORDERS_FAILED = 'GET_ORDERS_FAILED';
+
+export const AUTH_START = 'AUTH_START';
+export const AUTH_FAIL = 'AUTH_FAIL';
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export const AUTH_LOG_OUT = 'AUTH_LOG_OUT';
+
+export const REDIRECT_AFTER_AUTH = 'REDIRECT_AFTER_AUTH';

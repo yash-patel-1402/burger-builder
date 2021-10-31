@@ -43,9 +43,14 @@ export class BurgerBuilder extends Component {
   };
 
   showOrderSummary = () => {
-    this.setState({
-      showOrderSummary: true,
-    });
+    if (this.props.isAuthenticated) {
+      this.setState({
+        showOrderSummary: true,
+      });
+    } else {
+      this.props.onRedirectAfterAuth('/checkout');
+      this.props.history.push('/auth');
+    }
   };
 
   hideOrderSummary = () => {
@@ -97,6 +102,7 @@ export class BurgerBuilder extends Component {
             disabledConfig={this.getDisabledConfig()}
             purchasable={this.getPurchasable(this.props.ingredients)}
             onOrderButtonClick={this.showOrderSummary}
+            isAuthenticated={this.props.isAuthenticated}
           />
         </>
       );
@@ -122,6 +128,7 @@ const mapStateToProps = (state) => {
     ingredients: state.burger.ingredients,
     price: state.burger.price,
     error: state.burger.error,
+    isAuthenticated: state.auth.token !== null,
   };
 };
 
@@ -135,6 +142,8 @@ const mapDispatchToProps = (dispatch) => {
     },
     onFetchIngredients: () => dispatch(actionCreators.fetchIngredients()),
     onPurchaseInit: () => dispatch(actionCreators.purchaseInit()),
+    onRedirectAfterAuth: (path) =>
+      dispatch(actionCreators.setRedirectAfterAuth(path)),
   };
 };
 

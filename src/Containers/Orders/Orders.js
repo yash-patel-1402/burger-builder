@@ -6,15 +6,34 @@ import Spinner from '../../Components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
+import { Redirect } from 'react-router';
 
 export class Orders extends Component {
+  constructor(props) {
+    super(props);
+    console.log(props);
+    this.state = {
+      prevToken: this.props.token,
+    };
+  }
+
+  componentDidUpdate() {
+    if (this.state.prevToken != this.props.token) {
+      this.setState({ prevToken: this.props.token });
+
+      this.props.loadAllOrders(this.props.token);
+    }
+  }
+
   componentDidMount() {
-    this.props.loadAllOrders();
+    if (this.props.token) {
+      this.props.loadAllOrders(this.props.token);
+    }
   }
 
   render() {
     let orders = <Spinner />;
-    if (this.props.orders) {
+    if (!this.props.loading) {
       if (this.props.error) {
         orders = (
           <p style={{ color: 'red', fontWeight: 'bold', textAlign: 'center' }}>
@@ -42,12 +61,14 @@ const mapStateToProps = (state) => {
   return {
     orders: state.order.orders,
     error: state.order.error,
+    loading: state.order.loading,
+    token: state.auth.token,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loadAllOrders: () => dispatch(actionCreators.getAllOrders()),
+    loadAllOrders: (token) => dispatch(actionCreators.getAllOrders(token)),
   };
 };
 

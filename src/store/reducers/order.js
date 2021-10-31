@@ -21,6 +21,8 @@ const reducer = (state = initialState, action) => {
       return setOrders(state, action.payload.orders);
     case actionTypes.GET_ORDERS_FAILED:
       return getOrdersFailed(state, action.payload.error);
+    case actionTypes.GET_ORDERS_START:
+      return getOrdersStart(state);
     default:
       return state;
   }
@@ -41,6 +43,7 @@ const purchaseLoadingSet = (state) => {
 };
 
 const purchaseSuccess = (state, { orderId, orderData }) => {
+  // console.log(state);
   return {
     ...state,
     orders: state.orders.concat({ ...orderData, id: orderId }),
@@ -57,10 +60,23 @@ const purchaseFail = (state, error) => {
 };
 
 const setOrders = (state, orders) => {
+  const transformedOrders = [];
+  for (let key in orders) {
+    transformedOrders.push({ orderId: key, ...orders[key] });
+  }
   return {
     ...state,
-    orders: orders,
+    orders: transformedOrders,
     error: null,
+    loading: false,
+  };
+};
+
+const getOrdersStart = (state) => {
+  return {
+    ...state,
+    error: null,
+    loading: true,
   };
 };
 
@@ -68,6 +84,7 @@ const getOrdersFailed = (state, error) => {
   return {
     ...state,
     error: true,
+    loading: false,
   };
 };
 

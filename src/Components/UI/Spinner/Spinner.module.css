@@ -1,10 +1,12 @@
 .Loader {
   font-size: 10px;
   margin: 50px auto;
+  overflow: hidden;
   text-indent: -9999em;
   width: 11em;
   height: 11em;
   border-radius: 50%;
+  box-sizing: border-box;
   background: #5f0b6f;
   background: -moz-linear-gradient(left, #5f0b6f 10%, rgba(95, 11, 111, 0) 42%);
   background: -webkit-linear-gradient(
@@ -25,6 +27,7 @@
 .Loader:before {
   width: 50%;
   height: 50%;
+  box-sizing: border-box;
   background: #5f0b6f;
   border-radius: 100% 0 0 0;
   position: absolute;
@@ -36,6 +39,7 @@
   background: #f7f7f7;
   width: 75%;
   height: 75%;
+  box-sizing: border-box;
   border-radius: 50%;
   content: '';
   margin: auto;

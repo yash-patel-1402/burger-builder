@@ -4,6 +4,7 @@ const initialState = {
   ingredients: null,
   price: 0,
   error: null,
+  building: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -35,6 +36,7 @@ const add_ingredients = (state, ingredientName) => {
       ...state.ingredients,
       [ingredientName]: state.ingredients[ingredientName] + 1,
     },
+    building: true,
     price: Math.abs(state.price + INGREDIENT_PRICES[ingredientName]),
   };
 };
@@ -46,6 +48,7 @@ const remove_ingredients = (state, ingredientName) => {
       ...state.ingredients,
       [ingredientName]: state.ingredients[ingredientName] - 1,
     },
+    building: true,
     price: Math.abs(state.price - INGREDIENT_PRICES[ingredientName]),
   };
 };
@@ -56,6 +59,7 @@ const set_ingredients = (state, ingredients) => {
     ingredients,
     price: get_price(ingredients),
     error: false,
+    building: false,
   };
 };
 

@@ -1,37 +1,39 @@
-import React from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { applyMiddleware, createStore, compose, combineReducers } from 'redux';
-
-import burgerReducer from './store/reducers/burger';
-import orderReducer from './store/reducers/order';
+import React, { Component } from 'react';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Layout from './Components/Layout/Layout';
 import BurgerBuilder from './Containers/BurgerBuilder/BurgerBuilder';
 import Checkout from './Containers/Checkout/Checkout';
 import Orders from './Containers/Orders/Orders';
-import thunk from 'redux-thunk';
+import * as actions from './store/actions/index';
+import Auth from './Containers/Auth/Auth';
+import Logout from './Containers/Auth/Logout';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(
-  combineReducers({ burger: burgerReducer, order: orderReducer }),
-  composeEnhancers(applyMiddleware(thunk))
-);
+class App extends Component {
+  componentDidMount = () => {
+    this.props.onAutoAuth();
+  };
 
-const App = () => {
-  return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <Layout>
-          <Switch>
-            <Route path='/burger' exact component={BurgerBuilder} />
-            <Route path='/orders' exact component={Orders} />
-            <Route path='/checkout' component={Checkout} />
-            <Redirect from='/' to='/burger' />
-          </Switch>
-        </Layout>
-      </BrowserRouter>
-    </Provider>
-  );
+  render() {
+    return (
+      <Layout>
+        <Switch>
+          <Route path='/burger' exact component={BurgerBuilder} />
+          <Route path='/orders' exact component={Orders} />
+          <Route path='/auth' exact component={Auth} />
+          <Route path='/checkout' component={Checkout} />
+          <Route path='/logout' component={Logout} />
+          <Redirect from='/' to='/burger' />
+        </Switch>
+      </Layout>
+    );
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAutoAuth: () => dispatch(actions.autoAuth()),
+  };
 };
 
-export default App;
+export default withRouter(connect(null, mapDispatchToProps)(App));

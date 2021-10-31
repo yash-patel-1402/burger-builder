@@ -33,7 +33,7 @@ export class Checkout extends Component {
       price: this.props.price,
       customer: customerData,
     };
-    this.props.onOrderConfirm(data);
+    this.props.onOrderConfirm(data, this.props.token);
   };
 
   render() {
@@ -72,13 +72,14 @@ const mapStateToProps = (state) => {
     price: state.burger.price,
     loading: state.order.loading,
     purchased: state.order.purchased,
+    token: state.auth.token,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onOrderConfirm: (orderData) =>
-      dispatch(actionCreator.purchasePost(orderData)),
+    onOrderConfirm: (orderData, token) =>
+      dispatch(actionCreator.purchasePost(orderData, token)),
   };
 };
 
