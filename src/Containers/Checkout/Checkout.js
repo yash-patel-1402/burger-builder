@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 import CheckoutSummary from '../../Components/Order/CheckoutSummary';
 import ContactForm from './ContactForm/ContactForm';
 import axios from '../../axios-order';
+import * as actionCreator from '../../store/actions/index';
 import Spinner from '../../Components/UI/Spinner/Spinner';
 import { connect } from 'react-redux';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 export class Checkout extends Component {
   constructor(props) {
     super(props);
+    console.log(this.props);
     this.state = {
       loading: false,
     };
@@ -30,55 +33,56 @@ export class Checkout extends Component {
       price: this.props.price,
       customer: customerData,
     };
-    // console.log(this.state);
-    // console.log(data);
-    this.setState({ loading: true });
-    axios
-      .post('/orders.json', data)
-      .then((response) => {
-        this.setState({ loading: false });
-        this.props.history.push('/burger');
-        // console.log(response);
-      })
-      .catch((error) => {
-        this.setState({ loading: false });
-        // console.log(error);
-      });
+    this.props.onOrderConfirm(data);
   };
 
   render() {
-    return (
-      <div>
-        <CheckoutSummary
-          ingredients={this.props.ingredients}
-          onCancelClick={this.onCancelClick}
-          onContinueClick={this.onContinueClick}
-        />
-        {this.state.loading ? (
-          <Spinner />
-        ) : (
-          <Route
-            path='/checkout/contact-data'
-            exact
-            render={() => (
-              <ContactForm onContactFormSubmit={this.onContactFormSubmit} />
-            )}
+    let checkoutSummary = <Redirect to='/burger' />;
+    if (this.props.ingredients) {
+      checkoutSummary = (
+        <div>
+          {this.props.purchased && <Redirect to='/' />}
+          <CheckoutSummary
+            ingredients={this.props.ingredients}
+            onCancelClick={this.onCancelClick}
+            onContinueClick={this.onContinueClick}
           />
-        )}
-      </div>
-    );
+          {this.props.loading ? (
+            <Spinner />
+          ) : (
+            <Route
+              path='/checkout/contact-data'
+              exact
+              render={() => (
+                <ContactForm onContactFormSubmit={this.onContactFormSubmit} />
+              )}
+            />
+          )}
+        </div>
+      );
+    }
+    return checkoutSummary;
   }
 }
 
 const mapStateToProps = (state) => {
+  // console.log(state);
   return {
-    ingredients: state.ingredients,
-    price: state.price,
+    ingredients: state.burger.ingredients,
+    price: state.burger.price,
+    loading: state.order.loading,
+    purchased: state.order.purchased,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    onOrderConfirm: (orderData) =>
+      dispatch(actionCreator.purchasePost(orderData)),
+  };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(Checkout, axios));

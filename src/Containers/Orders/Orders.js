@@ -4,39 +4,26 @@ import axios from '../../axios-order';
 import Order from '../../Components/Order/Order';
 import Spinner from '../../Components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import { connect } from 'react-redux';
+import * as actionCreators from '../../store/actions/index';
 
 export class Orders extends Component {
-  state = {
-    orders: null,
-    loading: true,
-    error: false,
-  };
-
-  componentDidMount = () => {
-    this.setState({ loading: true });
-    axios
-      .get('/orders.json')
-      .then((response) => {
-        this.setState({ orders: response.data });
-        this.setState({ loading: false });
-      })
-      .catch((error) => {
-        this.setState({ loading: false, error: true });
-      });
-  };
+  componentDidMount() {
+    this.props.loadAllOrders();
+  }
 
   render() {
     let orders = <Spinner />;
-    if (!this.state.loading) {
-      if (this.state.error) {
+    if (this.props.orders) {
+      if (this.props.error) {
         orders = (
           <p style={{ color: 'red', fontWeight: 'bold', textAlign: 'center' }}>
             Something gone wrong!
           </p>
         );
       } else {
-        orders = Object.keys(this.state.orders).map((orderKey) => {
-          const order = this.state.orders[orderKey];
+        orders = Object.keys(this.props.orders).map((orderKey) => {
+          const order = this.props.orders[orderKey];
           return (
             <Order
               key={orderKey}
@@ -51,4 +38,20 @@ export class Orders extends Component {
   }
 }
 
-export default withErrorHandler(Orders, axios);
+const mapStateToProps = (state) => {
+  return {
+    orders: state.order.orders,
+    error: state.order.error,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadAllOrders: () => dispatch(actionCreators.getAllOrders()),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(Orders, axios));
