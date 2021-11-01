@@ -1,0 +1,13 @@
+[debug] [2021-11-01T04:22:13.238Z] ----------------------------------------------------------------------
+[debug] [2021-11-01T04:22:13.240Z] Command:       /usr/bin/node /usr/bin/firebase deploy
+[debug] [2021-11-01T04:22:13.240Z] CLI Version:   9.21.0
+[debug] [2021-11-01T04:22:13.240Z] Platform:      linux
+[debug] [2021-11-01T04:22:13.240Z] Node Version:  v14.18.0
+[debug] [2021-11-01T04:22:13.240Z] Time:          Mon Nov 01 2021 09:52:13 GMT+0530 (India Standard Time)
+[debug] [2021-11-01T04:22:13.241Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-11-01T04:22:13.288Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-11-01T04:22:13.288Z] > authorizing via signed-in user (yashpatel45273@gmail.com)
+[debug] [2021-11-01T04:22:13.288Z] [iam] checking project react-burger-b5a2b for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-11-01T04:22:13.290Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/react-burger-b5a2b:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
