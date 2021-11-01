@@ -6,19 +6,17 @@ import Spinner from '../../Components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
-import { Redirect } from 'react-router';
 
 export class Orders extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       prevToken: this.props.token,
     };
   }
 
   componentDidUpdate() {
-    if (this.state.prevToken != this.props.token) {
+    if (this.state.prevToken !== this.props.token) {
       this.setState({ prevToken: this.props.token });
 
       this.props.loadAllOrders(this.props.token);
@@ -27,7 +25,7 @@ export class Orders extends Component {
 
   componentDidMount() {
     if (this.props.token) {
-      this.props.loadAllOrders(this.props.token);
+      this.props.loadAllOrders(this.props.token, this.props.userId);
     }
   }
 
@@ -51,6 +49,7 @@ export class Orders extends Component {
             />
           );
         });
+        orders.reverse();
       }
     }
     return <div>{orders}</div>;
@@ -63,12 +62,14 @@ const mapStateToProps = (state) => {
     error: state.order.error,
     loading: state.order.loading,
     token: state.auth.token,
+    userId: state.auth.userId,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loadAllOrders: (token) => dispatch(actionCreators.getAllOrders(token)),
+    loadAllOrders: (token, userId) =>
+      dispatch(actionCreators.getAllOrders(token, userId)),
   };
 };
 

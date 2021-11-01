@@ -16,17 +16,22 @@ const withErrorHandler = (WrappedComponent, axios) => {
       this.reqInterceptor = axios.interceptors.request.use(
         (req) => req,
         (error) => {
-          console.log('Error shown in request');
-          this.setState({ error: error });
+          if (error.response !== undefined) {
+            this.setState({ error: error.response.data.error });
+          } else {
+            this.setState({ error: error });
+          }
           throw error;
         }
       );
       this.resInterceptor = axios.interceptors.response.use(
         (res) => res,
         (error) => {
-          console.log('Error shown in response');
-          // console.log('Error setState called');
-          this.setState({ error: error });
+          if (error.response !== undefined) {
+            this.setState({ error: error.response.data.error });
+          } else {
+            this.setState({ error: error });
+          }
           throw error;
         }
       );

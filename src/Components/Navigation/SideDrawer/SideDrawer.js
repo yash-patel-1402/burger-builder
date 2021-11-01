@@ -12,7 +12,7 @@ const SideDrawer = (props) => {
   ];
   return (
     <>
-      <div className={sidebarClasses.join(' ')}>
+      <div className={sidebarClasses.join(' ')} onClick={props.toggleSideBar}>
         <div className={classes.Logo}>
           <Logo />
         </div>

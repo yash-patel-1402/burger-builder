@@ -8,7 +8,6 @@ import OrderSummary from '../../Components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../Components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions/actionTypes';
 import * as actionCreators from '../../store/actions/index';
 
 export class BurgerBuilder extends Component {

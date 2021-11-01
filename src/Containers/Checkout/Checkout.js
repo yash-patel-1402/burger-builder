@@ -12,7 +12,6 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 export class Checkout extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {
       loading: false,
     };
@@ -32,6 +31,7 @@ export class Checkout extends Component {
       ingredients: { ...this.props.ingredients },
       price: this.props.price,
       customer: customerData,
+      userId: this.props.userId,
     };
     this.props.onOrderConfirm(data, this.props.token);
   };
@@ -66,13 +66,13 @@ export class Checkout extends Component {
 }
 
 const mapStateToProps = (state) => {
-  // console.log(state);
   return {
     ingredients: state.burger.ingredients,
     price: state.burger.price,
     loading: state.order.loading,
     purchased: state.order.purchased,
     token: state.auth.token,
+    userId: state.auth.userId,
   };
 };
 

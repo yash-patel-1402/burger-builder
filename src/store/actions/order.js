@@ -38,11 +38,9 @@ export const purchasePost = (orderData, token) => {
     axios
       .post('/orders.json?auth=' + token, orderData)
       .then((response) => {
-        console.log(response);
         dispatch(purchaseSuccess(response.data.name, orderData));
       })
       .catch((error) => {
-        console.log(error);
         dispatch(purchaseFail(error));
       });
   };
@@ -68,16 +66,16 @@ const getOrdersStart = (error) => {
   };
 };
 
-export const getAllOrders = (token) => {
+export const getAllOrders = (token, userId) => {
   return (dispatch) => {
     dispatch(getOrdersStart());
+    const queryParams = `?auth=${token}&orderBy="userId"&equalTo="${userId}"`;
     axios
-      .get('/orders.json?auth=' + token)
+      .get('/orders.json' + queryParams)
       .then((response) => {
         dispatch(setOrders(response.data));
       })
       .catch((error) => {
-        console.log(error);
         dispatch(getOrdersFailed(error));
       });
   };

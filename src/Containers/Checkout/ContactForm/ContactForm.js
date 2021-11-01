@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Button from '../../../Components/UI/Button/Button';
 import Input from '../../../Components/UI/Input/Input';
 import classes from './ContactForm.module.css';
+import { checkValidity } from '../../../shared/utility';
 
 class ContactForm extends Component {
   state = {
@@ -81,29 +82,12 @@ class ContactForm extends Component {
     },
   };
 
-  checkValidity = (validationRules, value) => {
-    let isValid = true;
-    if (validationRules.required) {
-      isValid = isValid && value.trim() !== '';
-    }
-
-    if (validationRules.minLength) {
-      isValid = isValid && value.length >= validationRules.minLength;
-    }
-
-    if (validationRules.maxLength) {
-      isValid = isValid && value.length <= validationRules.maxLength;
-    }
-
-    return isValid;
-  };
-
   formInputChangeHandler = (event, id) => {
     let newOrderForm = { ...this.state.orderForm };
     newOrderForm[id].value = event.target.value;
     if (newOrderForm[id].hasOwnProperty('validationRules')) {
       newOrderForm[id].touched = true;
-      newOrderForm[id].isValid = this.checkValidity(
+      newOrderForm[id].isValid = checkValidity(
         newOrderForm[id].validationRules,
         event.target.value
       );
